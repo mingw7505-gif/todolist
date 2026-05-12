@@ -140,7 +140,7 @@ function App() {
       <section className="todo-app" aria-labelledby="page-title">
         <header className="app-header">
           <div>
-            <h1 id="page-title">王总任务清单</h1>
+            <h1 id="page-title">TodoList</h1>
             <p>管理今天要完成的事</p>
           </div>
 
