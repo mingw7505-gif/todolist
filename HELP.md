@@ -260,7 +260,7 @@ TodoList 主页面组件。
 - 显示总任务、未完成任务、已完成任务数量。
 - 支持清除已完成任务，没有已完成任务时按钮会禁用。
 - 使用 `localStorage` 保存任务，刷新页面后继续显示。
-- 在标题区域显示一个用 CSS 画出来的小熊猫装饰。
+- 在标题区域显示用 CSS 画出来的小熊猫和考拉装饰。
 
 目前大部分业务逻辑都在这个文件里。
 
@@ -286,16 +286,19 @@ TodoList 主页面组件。
 
 如果你想调整页面长什么样，通常先看这个文件。
 
-现在的小熊猫也是在这个文件里画出来的。
+现在的小熊猫和考拉也是在这个文件里画出来的。
 
 相关样式名：
 
+- `.animal-group`
+- `.animal`
 - `.panda`
-- `.panda-ear`
-- `.panda-face`
-- `.panda-eye`
-- `.panda-nose`
-- `.panda-mouth`
+- `.koala`
+- `.animal-ear`
+- `.animal-face`
+- `.animal-eye`
+- `.animal-nose`
+- `.animal-mouth`
 
 ## 新手学习顺序
 

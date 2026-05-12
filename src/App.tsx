@@ -144,14 +144,38 @@ function App() {
             <p>管理今天要完成的事</p>
           </div>
 
-          <div className="panda" aria-label="小熊猫" role="img">
-            <span className="panda-ear panda-ear-left" />
-            <span className="panda-ear panda-ear-right" />
-            <span className="panda-face">
-              <span className="panda-eye panda-eye-left" />
-              <span className="panda-eye panda-eye-right" />
-              <span className="panda-nose" />
-              <span className="panda-mouth" />
+          <div className="animal-group" aria-label="小熊猫和考拉" role="img">
+            <span className="animal panda">
+              <span className="animal-ear animal-ear-left" />
+              <span className="animal-ear animal-ear-right" />
+              <span className="animal-face">
+                <span className="animal-eye animal-eye-left" />
+                <span className="animal-eye animal-eye-right" />
+                <span className="animal-nose" />
+                <span className="animal-mouth" />
+              </span>
+            </span>
+
+            <span className="animal panda panda-small">
+              <span className="animal-ear animal-ear-left" />
+              <span className="animal-ear animal-ear-right" />
+              <span className="animal-face">
+                <span className="animal-eye animal-eye-left" />
+                <span className="animal-eye animal-eye-right" />
+                <span className="animal-nose" />
+                <span className="animal-mouth" />
+              </span>
+            </span>
+
+            <span className="animal koala">
+              <span className="animal-ear animal-ear-left" />
+              <span className="animal-ear animal-ear-right" />
+              <span className="animal-face">
+                <span className="animal-eye animal-eye-left" />
+                <span className="animal-eye animal-eye-right" />
+                <span className="animal-nose" />
+                <span className="animal-mouth" />
+              </span>
             </span>
           </div>
         </header>
