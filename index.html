@@ -4,9 +4,1169 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TodoList</title>
+    <style>
+      :root {
+        --color-text: #2d3a4a;
+        --color-muted: #8391a1;
+        --color-soft: #b0bec5;
+        --color-primary: #4f8ef7;
+        --color-line: #e8edf2;
+        --color-danger: #ef4444;
+        --color-warning: #f59e0b;
+        --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.05);
+        --transition: 0.24s ease-in-out;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+      }
+
+      body {
+        min-height: 100dvh;
+        margin: 0;
+        color: var(--color-text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+        background: linear-gradient(180deg, #e8f0fe 0%, #f9f9fb 100%);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+        padding: 12px;
+      }
+
+      .todo-card {
+        display: flex;
+        flex-direction: column;
+        width: min(100%, 375px);
+        height: min(760px, calc(100dvh - 24px));
+        min-height: 0;
+        padding: 20px;
+        overflow: hidden;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .todo-card__fixed {
+        flex: 0 0 auto;
+      }
+
+      .todo-card__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .todo-card__date {
+        margin: 0;
+        color: var(--color-muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .todo-card__title {
+        margin: 3px 0 0;
+        color: var(--color-text);
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.18;
+      }
+
+      .todo-card__menu-wrap {
+        position: relative;
+        flex: 0 0 auto;
+      }
+
+      .menu-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        color: var(--color-muted);
+        background: #f1f5f9;
+        border: 0;
+        border-radius: 50%;
+        transition:
+          background-color var(--transition),
+          color var(--transition),
+          transform var(--transition);
+      }
+
+      .menu-button:active {
+        transform: scale(0.96);
+      }
+
+      .menu-button__dot {
+        width: 4px;
+        height: 4px;
+        margin: 0 2px;
+        background: currentColor;
+        border-radius: 50%;
+      }
+
+      .more-menu {
+        position: absolute;
+        top: 48px;
+        right: 0;
+        z-index: 10;
+        width: 122px;
+        padding: 8px;
+        color: var(--color-muted);
+        font-size: 13px;
+        background: #ffffff;
+        border: 1px solid var(--color-line);
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(45, 58, 74, 0.12);
+      }
+
+      .more-menu[hidden] {
+        display: none;
+      }
+
+      .more-menu__item {
+        padding: 8px;
+        border-radius: 10px;
+      }
+
+      .task-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--color-line);
+      }
+
+      .task-form__add {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        color: #ffffff;
+        background: transparent;
+        border: 0;
+        transition: transform var(--transition);
+      }
+
+      .task-form__add::before {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        content: "";
+        background: var(--color-primary);
+        border-radius: 50%;
+        box-shadow: 0 10px 20px rgba(79, 142, 247, 0.22);
+      }
+
+      .task-form__add::after {
+        position: relative;
+        content: "+";
+        font-size: 27px;
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      .task-form__add:active {
+        transform: scale(0.94);
+      }
+
+      .task-form__input {
+        flex: 1;
+        min-width: 0;
+        height: 44px;
+        padding: 0;
+        color: var(--color-text);
+        font-size: 16px;
+        background: transparent;
+        border: 0;
+        outline: 0;
+      }
+
+      .task-form__input::placeholder {
+        color: var(--color-muted);
+      }
+
+      .todo-card__message {
+        min-height: 20px;
+        margin: 8px 0 0;
+        color: var(--color-danger);
+        font-size: 13px;
+      }
+
+      .todo-card__message[hidden] {
+        display: block;
+        visibility: hidden;
+      }
+
+      .filter-tabs {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .filter-tabs__button {
+        min-width: 0;
+        min-height: 44px;
+        padding: 10px 13px;
+        color: var(--color-muted);
+        font-size: 14px;
+        font-weight: 500;
+        background: #f1f5f9;
+        border: 0;
+        border-radius: 999px;
+        transition:
+          background-color 0.2s ease-in-out,
+          color 0.2s ease-in-out,
+          transform 0.2s ease-in-out;
+      }
+
+      .filter-tabs__button:active {
+        transform: scale(0.97);
+      }
+
+      .filter-tabs__button--active {
+        color: #ffffff;
+        background: var(--color-primary);
+      }
+
+      .filter-tabs__count {
+        margin-left: 4px;
+        opacity: 0.82;
+      }
+
+      .todo-card__list-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        margin: 14px -4px 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .todo-list {
+        min-height: 100%;
+        padding: 0 4px;
+        margin: 0;
+        list-style: none;
+      }
+
+      .empty-state {
+        display: grid;
+        place-items: center;
+        min-height: 250px;
+        color: var(--color-soft);
+        text-align: center;
+      }
+
+      .empty-state__icon {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .empty-state__text {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .todo-item {
+        position: relative;
+        min-height: 56px;
+        max-height: 110px;
+        overflow: hidden;
+        border-bottom: 1px solid var(--color-line);
+        opacity: 1;
+        transform: translateX(0);
+        transition:
+          opacity var(--transition),
+          transform var(--transition),
+          max-height var(--transition),
+          padding var(--transition);
+      }
+
+      .todo-item--enter {
+        animation: task-enter 0.26s ease-in-out;
+      }
+
+      .todo-item--removing {
+        max-height: 0;
+        opacity: 0;
+        transform: translateX(-110%);
+      }
+
+      .todo-item__body {
+        position: relative;
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+        align-items: center;
+        min-height: 56px;
+        padding: 12px 0 12px 16px;
+        background: #ffffff;
+        transition: transform var(--transition);
+      }
+
+      .todo-item--swiped .todo-item__body {
+        transform: translateX(-12px);
+      }
+
+      .todo-item__priority {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        display: none;
+        width: 3px;
+        height: 20px;
+        border-radius: 999px;
+        transform: translateY(-50%);
+      }
+
+      .todo-item--priority-high .todo-item__priority {
+        display: block;
+        background: var(--color-danger);
+      }
+
+      .todo-item--priority-medium .todo-item__priority {
+        display: block;
+        background: var(--color-warning);
+      }
+
+      .todo-item__check {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+      }
+
+      .todo-item__check-circle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border: 2px solid #cbd5e1;
+        border-radius: 50%;
+        transition:
+          background-color var(--transition),
+          border-color var(--transition),
+          transform var(--transition);
+      }
+
+      .todo-item__check-circle::after {
+        width: 6px;
+        height: 10px;
+        content: "";
+        border-right: 2px solid #ffffff;
+        border-bottom: 2px solid #ffffff;
+        opacity: 0;
+        transform: rotate(45deg) translate(-1px, -1px);
+        transition: opacity var(--transition);
+      }
+
+      .todo-item--completed .todo-item__check-circle {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+
+      .todo-item--completed .todo-item__check-circle::after {
+        opacity: 1;
+      }
+
+      .todo-item__main {
+        min-width: 0;
+      }
+
+      .todo-item__display {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .todo-item__text-button {
+        min-width: 0;
+        min-height: 44px;
+        padding: 0;
+        overflow: hidden;
+        color: var(--color-text);
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: transparent;
+        border: 0;
+        transition:
+          color var(--transition),
+          text-decoration-color var(--transition);
+      }
+
+      .todo-item--completed .todo-item__text-button {
+        color: var(--color-soft);
+        text-decoration: line-through;
+      }
+
+      .todo-item__time {
+        flex: 0 0 auto;
+        padding: 3px 7px;
+        color: var(--color-muted);
+        font-size: 12px;
+        line-height: 1.2;
+        background: #f1f5f9;
+        border-radius: 999px;
+        transition:
+          color var(--transition),
+          background-color var(--transition);
+      }
+
+      .todo-item__time--overdue {
+        color: var(--color-danger);
+        background: #fee2e2;
+      }
+
+      .todo-item__edit {
+        width: 100%;
+        min-height: 44px;
+        padding: 0;
+        color: var(--color-text);
+        font-size: 16px;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--color-primary);
+        outline: 0;
+      }
+
+      .todo-item__delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        color: var(--color-danger);
+        background: transparent;
+        border: 0;
+        opacity: 0;
+        transition:
+          opacity var(--transition),
+          transform var(--transition);
+      }
+
+      .todo-item:hover .todo-item__delete,
+      .todo-item:active .todo-item__delete,
+      .todo-item--swiped .todo-item__delete,
+      .todo-item__delete:focus-visible {
+        opacity: 1;
+      }
+
+      .todo-item__delete:active {
+        transform: scale(0.92);
+      }
+
+      .todo-card__footer {
+        flex: 0 0 auto;
+        padding-top: 12px;
+        background: #ffffff;
+      }
+
+      .todo-stats {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: var(--color-muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .clear-button {
+        display: block;
+        min-height: 44px;
+        padding: 10px 0 0;
+        margin: 8px auto 0;
+        color: #94a3b8;
+        font-size: 14px;
+        background: transparent;
+        border: 0;
+        transition:
+          color var(--transition),
+          opacity var(--transition);
+      }
+
+      .clear-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .clear-button:not(:disabled):active {
+        color: var(--color-danger);
+      }
+
+      @keyframes task-enter {
+        from {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 375px) {
+        .app {
+          padding: 0;
+        }
+
+        .todo-card {
+          width: 100%;
+          height: 100dvh;
+          border-radius: 0;
+        }
+      }
+
+      @media (max-width: 340px) {
+        .todo-card {
+          padding: 16px;
+        }
+
+        .todo-card__title {
+          font-size: 25px;
+        }
+
+        .filter-tabs__button {
+          padding-inline: 9px;
+          font-size: 13px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <main class="app">
+      <section class="todo-card" aria-labelledby="todo-title">
+        <div class="todo-card__fixed">
+          <header class="todo-card__header">
+            <div>
+              <p class="todo-card__date">5月13日 星期二</p>
+              <h1 class="todo-card__title" id="todo-title">今天要做的事</h1>
+            </div>
+
+            <div class="todo-card__menu-wrap">
+              <button
+                class="menu-button"
+                type="button"
+                aria-label="更多"
+                aria-expanded="false"
+                data-menu-button
+              >
+                <span class="menu-button__dot"></span>
+                <span class="menu-button__dot"></span>
+                <span class="menu-button__dot"></span>
+              </button>
+              <div class="more-menu" hidden data-menu>
+                <div class="more-menu__item">更多功能</div>
+                <div class="more-menu__item">暂未开放</div>
+              </div>
+            </div>
+          </header>
+
+          <form class="task-form" data-task-form>
+            <button class="task-form__add" type="submit" aria-label="添加任务"></button>
+            <input
+              class="task-form__input"
+              type="text"
+              autocomplete="off"
+              placeholder="添加任务，比如‘晚上买牛奶’"
+              data-task-input
+            />
+          </form>
+          <p class="todo-card__message" hidden data-message>请输入任务内容</p>
+
+          <nav class="filter-tabs" aria-label="任务筛选" data-filter-tabs>
+            <button
+              class="filter-tabs__button filter-tabs__button--active"
+              type="button"
+              data-filter="all"
+            >
+              全部<span class="filter-tabs__count" data-count="all">0</span>
+            </button>
+            <button class="filter-tabs__button" type="button" data-filter="active">
+              未完成<span class="filter-tabs__count" data-count="active">0</span>
+            </button>
+            <button class="filter-tabs__button" type="button" data-filter="completed">
+              已完成<span class="filter-tabs__count" data-count="completed">0</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="todo-card__list-wrap">
+          <ul class="todo-list" data-task-list></ul>
+        </div>
+
+        <footer class="todo-card__footer">
+          <div class="todo-stats">
+            <span>总任务：<strong data-stat="total">0</strong></span>
+            <span>未完成：<strong data-stat="active">0</strong></span>
+            <span>已完成：<strong data-stat="completed">0</strong></span>
+          </div>
+          <button class="clear-button" type="button" disabled data-clear-completed>
+            清除已完成
+          </button>
+        </footer>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const TodoApp = {
+          storageKey: "todolist-todos",
+          todos: [],
+          filter: "all",
+          editingId: null,
+          editingText: "",
+          lastAddedId: null,
+          swipedId: null,
+          removingIds: new Set(),
+          touchState: null,
+          saveTimer: null,
+          messageTimer: null,
+          elements: {},
+
+          init() {
+            this.cacheElements();
+            this.todos = this.loadTodos();
+            this.bindEvents();
+            this.render();
+          },
+
+          cacheElements() {
+            this.elements.form = document.querySelector("[data-task-form]");
+            this.elements.input = document.querySelector("[data-task-input]");
+            this.elements.message = document.querySelector("[data-message]");
+            this.elements.filterTabs = document.querySelector("[data-filter-tabs]");
+            this.elements.list = document.querySelector("[data-task-list]");
+            this.elements.clearButton = document.querySelector("[data-clear-completed]");
+            this.elements.menuButton = document.querySelector("[data-menu-button]");
+            this.elements.menu = document.querySelector("[data-menu]");
+            this.elements.counts = {
+              all: document.querySelector('[data-count="all"]'),
+              active: document.querySelector('[data-count="active"]'),
+              completed: document.querySelector('[data-count="completed"]'),
+            };
+            this.elements.stats = {
+              total: document.querySelector('[data-stat="total"]'),
+              active: document.querySelector('[data-stat="active"]'),
+              completed: document.querySelector('[data-stat="completed"]'),
+            };
+          },
+
+          bindEvents() {
+            this.elements.form.addEventListener("submit", (event) => {
+              this.addTodo(event);
+            });
+
+            this.elements.filterTabs.addEventListener("click", (event) => {
+              const button = event.target.closest("[data-filter]");
+              if (!button) return;
+              this.filter = button.dataset.filter;
+              this.swipedId = null;
+              this.render();
+            });
+
+            this.elements.list.addEventListener("click", (event) => {
+              this.handleListClick(event);
+            });
+
+            this.elements.list.addEventListener("keydown", (event) => {
+              this.handleListKeydown(event);
+            });
+
+            this.elements.list.addEventListener(
+              "touchstart",
+              (event) => this.handleTouchStart(event),
+              { passive: true },
+            );
+
+            this.elements.list.addEventListener(
+              "touchend",
+              (event) => this.handleTouchEnd(event),
+              { passive: true },
+            );
+
+            this.elements.clearButton.addEventListener("click", () => {
+              this.clearCompletedTodos();
+            });
+
+            this.elements.menuButton.addEventListener("click", (event) => {
+              event.stopPropagation();
+              this.toggleMenu();
+            });
+
+            document.addEventListener("click", () => {
+              this.closeMenu();
+              this.clearSwipe();
+            });
+          },
+
+          loadTodos() {
+            const savedTodos = localStorage.getItem(this.storageKey);
+            if (!savedTodos) return [];
+
+            try {
+              const parsedTodos = JSON.parse(savedTodos);
+              if (!Array.isArray(parsedTodos)) return [];
+
+              return parsedTodos
+                .filter((todo) => todo && typeof todo.text === "string")
+                .map((todo) => ({
+                  id: String(todo.id || Date.now()),
+                  text: todo.text,
+                  completed: Boolean(todo.completed),
+                  priority:
+                    todo.priority === "high" || todo.priority === "medium"
+                      ? todo.priority
+                      : "none",
+                  deadline:
+                    typeof todo.deadline === "string" ? todo.deadline : "",
+                }));
+            } catch {
+              return [];
+            }
+          },
+
+          queueSave() {
+            window.clearTimeout(this.saveTimer);
+            this.saveTimer = window.setTimeout(() => {
+              localStorage.setItem(this.storageKey, JSON.stringify(this.todos));
+            }, 250);
+          },
+
+          addTodo(event) {
+            event.preventDefault();
+
+            const parsed = this.parseTaskText(this.elements.input.value);
+            if (!parsed.text) {
+              this.showMessage("请输入任务内容。");
+              return;
+            }
+
+            const todo = {
+              id: String(Date.now()),
+              text: parsed.text,
+              completed: false,
+              priority: parsed.priority,
+              deadline: parsed.deadline,
+            };
+
+            this.todos = [todo, ...this.todos];
+            this.lastAddedId = todo.id;
+            this.elements.input.value = "";
+            this.hideMessage();
+            this.render();
+            this.queueSave();
+
+            window.setTimeout(() => {
+              if (this.lastAddedId === todo.id) {
+                this.lastAddedId = null;
+                this.render();
+              }
+            }, 280);
+          },
+
+          toggleTodo(id) {
+            this.todos = this.todos.map((todo) =>
+              todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+            );
+            this.queueSave();
+            this.render();
+          },
+
+          startEditing(id) {
+            const todo = this.todos.find((item) => item.id === id);
+            if (!todo) return;
+            this.editingId = id;
+            this.editingText = this.formatEditableText(todo);
+            this.swipedId = null;
+            this.hideMessage();
+            this.render();
+          },
+
+          saveEditing(id) {
+            const parsed = this.parseTaskText(this.editingText);
+            if (!parsed.text) {
+              this.showMessage("任务内容不能为空。");
+              return;
+            }
+
+            this.todos = this.todos.map((todo) =>
+              todo.id === id
+                ? {
+                    ...todo,
+                    text: parsed.text,
+                    priority: parsed.priority,
+                    deadline: parsed.deadline,
+                  }
+                : todo,
+            );
+            this.editingId = null;
+            this.editingText = "";
+            this.hideMessage();
+            this.queueSave();
+            this.render();
+          },
+
+          cancelEditing() {
+            this.editingId = null;
+            this.editingText = "";
+            this.hideMessage();
+            this.render();
+          },
+
+          deleteTodo(id, delay = 0) {
+            window.setTimeout(() => {
+              this.removingIds.add(id);
+              this.swipedId = null;
+              this.render();
+
+              window.setTimeout(() => {
+                this.todos = this.todos.filter((todo) => todo.id !== id);
+                this.removingIds.delete(id);
+                if (this.editingId === id) {
+                  this.editingId = null;
+                  this.editingText = "";
+                }
+                this.queueSave();
+                this.render();
+              }, 260);
+            }, delay);
+          },
+
+          clearCompletedTodos() {
+            const completedTodos = this.todos.filter((todo) => todo.completed);
+            completedTodos.forEach((todo, index) => {
+              this.deleteTodo(todo.id, index * 80);
+            });
+          },
+
+          parseTaskText(rawText) {
+            let text = rawText.trim();
+            let priority = "none";
+            let deadline = "";
+
+            if (text.startsWith("!!")) {
+              priority = "high";
+              text = text.slice(2).trim();
+            } else if (text.startsWith("!")) {
+              priority = "medium";
+              text = text.slice(1).trim();
+            }
+
+            const deadlineMatch = text.match(/\s@([01]?\d|2[0-3]):([0-5]\d)\s*$/);
+            if (deadlineMatch) {
+              deadline = `${deadlineMatch[1].padStart(2, "0")}:${deadlineMatch[2]}`;
+              text = text.replace(deadlineMatch[0], "").trim();
+            }
+
+            return { text, priority, deadline };
+          },
+
+          formatEditableText(todo) {
+            const prefix =
+              todo.priority === "high" ? "!! " : todo.priority === "medium" ? "! " : "";
+            const deadline = todo.deadline ? ` @${todo.deadline}` : "";
+            return `${prefix}${todo.text}${deadline}`;
+          },
+
+          getCounts() {
+            const completed = this.todos.filter((todo) => todo.completed).length;
+            return {
+              total: this.todos.length,
+              active: this.todos.length - completed,
+              completed,
+            };
+          },
+
+          getFilteredTodos() {
+            if (this.filter === "active") {
+              return this.todos.filter((todo) => !todo.completed);
+            }
+
+            if (this.filter === "completed") {
+              return this.todos.filter((todo) => todo.completed);
+            }
+
+            return this.todos;
+          },
+
+          handleListClick(event) {
+            const actionElement = event.target.closest("[data-action]");
+            if (!actionElement) return;
+
+            event.stopPropagation();
+            const item = actionElement.closest("[data-id]");
+            if (!item) return;
+            const id = item.dataset.id;
+            const action = actionElement.dataset.action;
+
+            if (action === "toggle") this.toggleTodo(id);
+            if (action === "delete") this.deleteTodo(id);
+            if (action === "edit") this.startEditing(id);
+          },
+
+          handleListKeydown(event) {
+            const input = event.target.closest("[data-edit-input]");
+            if (!input || !this.editingId) return;
+
+            if (event.key === "Enter") {
+              this.editingText = input.value;
+              this.saveEditing(this.editingId);
+            }
+
+            if (event.key === "Escape") {
+              this.cancelEditing();
+            }
+          },
+
+          handleTouchStart(event) {
+            const item = event.target.closest("[data-id]");
+            if (!item) return;
+
+            const touch = event.changedTouches[0];
+            const id = item.dataset.id;
+            const canEdit = Boolean(event.target.closest('[data-action="edit"]'));
+
+            this.touchState = {
+              id,
+              startX: touch.clientX,
+              startY: touch.clientY,
+              canEdit,
+              longPressTimer: null,
+            };
+
+            if (canEdit) {
+              this.touchState.longPressTimer = window.setTimeout(() => {
+                this.startEditing(id);
+              }, 520);
+            }
+          },
+
+          handleTouchEnd(event) {
+            if (!this.touchState) return;
+
+            window.clearTimeout(this.touchState.longPressTimer);
+            const touch = event.changedTouches[0];
+            const deltaX = touch.clientX - this.touchState.startX;
+            const deltaY = touch.clientY - this.touchState.startY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -42) {
+              this.swipedId = this.touchState.id;
+              this.render();
+            }
+
+            if (deltaX > 24) {
+              this.clearSwipe();
+            }
+
+            this.touchState = null;
+          },
+
+          toggleMenu() {
+            const isOpen = !this.elements.menu.hidden;
+            this.elements.menu.hidden = isOpen;
+            this.elements.menuButton.setAttribute("aria-expanded", String(!isOpen));
+          },
+
+          closeMenu() {
+            this.elements.menu.hidden = true;
+            this.elements.menuButton.setAttribute("aria-expanded", "false");
+          },
+
+          clearSwipe() {
+            if (!this.swipedId) return;
+            this.swipedId = null;
+            this.render();
+          },
+
+          showMessage(text) {
+            window.clearTimeout(this.messageTimer);
+            this.elements.message.textContent = text;
+            this.elements.message.hidden = false;
+            this.messageTimer = window.setTimeout(() => this.hideMessage(), 2400);
+          },
+
+          hideMessage() {
+            this.elements.message.hidden = true;
+          },
+
+          isOverdue(deadline, completed) {
+            if (!deadline || completed) return false;
+            const [hours, minutes] = deadline.split(":").map(Number);
+            const now = new Date();
+            const deadlineMinutes = hours * 60 + minutes;
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            return deadlineMinutes < nowMinutes;
+          },
+
+          render() {
+            const counts = this.getCounts();
+            const filteredTodos = this.getFilteredTodos();
+
+            this.renderCounts(counts);
+            this.renderFilters();
+            this.elements.clearButton.disabled = counts.completed === 0;
+
+            if (filteredTodos.length === 0) {
+              this.elements.list.innerHTML = `
+                <li class="empty-state">
+                  <div>
+                    <span class="empty-state__icon" aria-hidden="true">📋</span>
+                    <p class="empty-state__text">还没有任务，休息一下～</p>
+                  </div>
+                </li>
+              `;
+              return;
+            }
+
+            this.elements.list.innerHTML = filteredTodos
+              .map((todo) => this.renderTodo(todo))
+              .join("");
+
+            if (this.editingId) {
+              const editInput = this.elements.list.querySelector("[data-edit-input]");
+              if (editInput) {
+                editInput.focus();
+                editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+                editInput.addEventListener("input", (event) => {
+                  this.editingText = event.target.value;
+                });
+              }
+            }
+          },
+
+          renderCounts(counts) {
+            this.elements.counts.all.textContent = counts.total;
+            this.elements.counts.active.textContent = counts.active;
+            this.elements.counts.completed.textContent = counts.completed;
+            this.elements.stats.total.textContent = counts.total;
+            this.elements.stats.active.textContent = counts.active;
+            this.elements.stats.completed.textContent = counts.completed;
+          },
+
+          renderFilters() {
+            this.elements.filterTabs.querySelectorAll("[data-filter]").forEach((button) => {
+              button.classList.toggle(
+                "filter-tabs__button--active",
+                button.dataset.filter === this.filter,
+              );
+            });
+          },
+
+          renderTodo(todo) {
+            const isEditing = this.editingId === todo.id;
+            const isOverdue = this.isOverdue(todo.deadline, todo.completed);
+            const classes = [
+              "todo-item",
+              todo.completed ? "todo-item--completed" : "",
+              todo.priority === "high" ? "todo-item--priority-high" : "",
+              todo.priority === "medium" ? "todo-item--priority-medium" : "",
+              this.lastAddedId === todo.id ? "todo-item--enter" : "",
+              this.swipedId === todo.id ? "todo-item--swiped" : "",
+              this.removingIds.has(todo.id) ? "todo-item--removing" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+            const deadlineHtml = todo.deadline
+              ? `<span class="todo-item__time ${
+                  isOverdue ? "todo-item__time--overdue" : ""
+                }">${this.escapeHtml(todo.deadline)}</span>`
+              : "";
+
+            const mainHtml = isEditing
+              ? `<input class="todo-item__edit" value="${this.escapeHtml(
+                  this.editingText,
+                )}" data-edit-input />`
+              : `<div class="todo-item__display">
+                  <button class="todo-item__text-button" type="button" data-action="edit">
+                    ${this.escapeHtml(todo.text)}
+                  </button>
+                  ${deadlineHtml}
+                </div>`;
+
+            return `
+              <li class="${classes}" data-id="${this.escapeHtml(todo.id)}">
+                <div class="todo-item__body">
+                  <span class="todo-item__priority" aria-hidden="true"></span>
+                  <button
+                    class="todo-item__check"
+                    type="button"
+                    aria-label="${todo.completed ? "标记为未完成" : "标记为完成"}"
+                    aria-pressed="${todo.completed}"
+                    data-action="toggle"
+                  >
+                    <span class="todo-item__check-circle"></span>
+                  </button>
+                  <div class="todo-item__main">${mainHtml}</div>
+                  <button class="todo-item__delete" type="button" aria-label="删除任务" data-action="delete">
+                    <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 6h2v9h-2V9Zm4 0h2v9h-2V9ZM7 9h2l1 11h4l1-11h2l-1.2 13H8.2L7 9Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </li>
+            `;
+          },
+
+          escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, (char) => {
+              const map = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;",
+              };
+              return map[char];
+            });
+          },
+        };
+
+        TodoApp.init();
+      })();
+    </script>
   </body>
 </html>

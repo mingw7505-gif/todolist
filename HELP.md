@@ -8,11 +8,12 @@
 
 这是一个纯前端 TodoList 网站项目。
 
+当前主页面是单文件实现，所有 HTML、CSS、JS 都写在 `index.html` 里。
+
 技术栈：
 
-- React：用来写页面和交互。
 - Vite：用来启动本地开发网站和打包项目。
-- TypeScript：让 JavaScript 多一层类型检查，减少低级错误。
+- HTML/CSS/JS：实现页面结构、样式和交互。
 
 目前没有后端、没有数据库、没有登录功能。
 
@@ -168,17 +169,8 @@ npm 安装依赖后生成的文件夹。
 作用：
 
 - 浏览器最先加载这个文件。
-- 里面有一个 `<div id="root"></div>`。
-- React 会把整个 TodoList 页面放进这个 `root` 里面。
-
-关键代码：
-
-```html
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
-```
-
-意思是：页面从 `src/main.tsx` 开始运行。
+- 当前版本的页面结构、移动端样式和 JavaScript 交互都写在这个文件里。
+- 这是现在真正运行的 TodoList 页面。
 
 ### `vite.config.ts`
 
@@ -217,8 +209,8 @@ TypeScript 配置文件。
 
 作用：
 
-- 放真正的网站代码。
-- 以后新增 React 组件、工具函数、样式文件，通常都放在这里。
+- 这里保留了早期 React 版本的学习代码。
+- 当前单文件移动端版本暂时不依赖这里的文件。
 
 ### `src/main.tsx`
 
