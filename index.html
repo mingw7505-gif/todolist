@@ -6,14 +6,17 @@
     <title>TodoList</title>
     <style>
       :root {
-        --color-text: #2d3a4a;
-        --color-muted: #8391a1;
+        --color-text: #233044;
+        --color-muted: #7d8ca0;
         --color-soft: #b0bec5;
         --color-primary: #4f8ef7;
+        --color-primary-dark: #3578ef;
         --color-line: #e8edf2;
         --color-danger: #ef4444;
         --color-warning: #f59e0b;
-        --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.05);
+        --shadow-card:
+          0 24px 80px rgba(48, 73, 112, 0.14),
+          0 8px 30px rgba(0, 0, 0, 0.05);
         --transition: 0.24s ease-in-out;
       }
 
@@ -32,7 +35,22 @@
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
           sans-serif;
-        background: linear-gradient(180deg, #e8f0fe 0%, #f9f9fb 100%);
+        background:
+          radial-gradient(circle at 50% -10%, rgba(79, 142, 247, 0.26), transparent 34%),
+          radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.78), transparent 26%),
+          linear-gradient(180deg, #e8f0fe 0%, #f9f9fb 100%);
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.42) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.38) 1px, transparent 1px);
+        background-size: 34px 34px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent 68%);
       }
 
       button,
@@ -53,6 +71,7 @@
       }
 
       .todo-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         width: min(100%, 375px);
@@ -60,12 +79,28 @@
         min-height: 0;
         padding: 20px;
         overflow: hidden;
-        background: #ffffff;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.94)),
+          #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.86);
         border-radius: 24px;
         box-shadow: var(--shadow-card);
       }
 
+      .todo-card::before {
+        position: absolute;
+        inset: 0;
+        height: 160px;
+        pointer-events: none;
+        content: "";
+        background:
+          radial-gradient(circle at 18% 24%, rgba(79, 142, 247, 0.13), transparent 34%),
+          linear-gradient(180deg, rgba(248, 250, 255, 0.9), transparent);
+      }
+
       .todo-card__fixed {
+        position: relative;
+        z-index: 1;
         flex: 0 0 auto;
       }
 
@@ -81,6 +116,7 @@
         margin: 0;
         color: var(--color-muted);
         font-size: 14px;
+        font-weight: 500;
         line-height: 1.5;
       }
 
@@ -106,13 +142,21 @@
         height: 44px;
         padding: 0;
         color: var(--color-muted);
-        background: #f1f5f9;
-        border: 0;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(226, 232, 240, 0.86);
         border-radius: 50%;
+        box-shadow: 0 10px 22px rgba(45, 58, 74, 0.08);
         transition:
           background-color var(--transition),
           color var(--transition),
+          box-shadow var(--transition),
           transform var(--transition);
+      }
+
+      .menu-button:hover {
+        color: var(--color-primary);
+        background: #ffffff;
+        box-shadow: 0 14px 28px rgba(45, 58, 74, 0.12);
       }
 
       .menu-button:active {
@@ -155,8 +199,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--color-line);
+        padding: 8px 10px 8px 8px;
+        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 22px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
       }
 
       .task-form__add {
@@ -179,9 +226,11 @@
         width: 40px;
         height: 40px;
         content: "";
-        background: var(--color-primary);
+        background: linear-gradient(135deg, #6aa2ff 0%, var(--color-primary-dark) 100%);
         border-radius: 50%;
-        box-shadow: 0 10px 20px rgba(79, 142, 247, 0.22);
+        box-shadow:
+          0 12px 24px rgba(79, 142, 247, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
       }
 
       .task-form__add::after {
@@ -200,7 +249,7 @@
         flex: 1;
         min-width: 0;
         height: 44px;
-        padding: 0;
+        padding: 0 2px;
         color: var(--color-text);
         font-size: 16px;
         background: transparent;
@@ -214,7 +263,7 @@
 
       .todo-card__message {
         min-height: 20px;
-        margin: 8px 0 0;
+        margin: 9px 0 0 6px;
         color: var(--color-danger);
         font-size: 13px;
       }
@@ -227,23 +276,33 @@
       .filter-tabs {
         display: flex;
         gap: 8px;
-        margin-top: 16px;
+        margin-top: 18px;
+        padding: 5px;
+        background: rgba(241, 245, 249, 0.72);
+        border: 1px solid rgba(226, 232, 240, 0.88);
+        border-radius: 999px;
       }
 
       .filter-tabs__button {
         min-width: 0;
         min-height: 44px;
-        padding: 10px 13px;
+        flex: 1;
+        padding: 10px 9px;
         color: var(--color-muted);
         font-size: 14px;
         font-weight: 500;
-        background: #f1f5f9;
+        background: transparent;
         border: 0;
         border-radius: 999px;
         transition:
           background-color 0.2s ease-in-out,
+          box-shadow 0.2s ease-in-out,
           color 0.2s ease-in-out,
           transform 0.2s ease-in-out;
+      }
+
+      .filter-tabs__button:hover {
+        background: rgba(255, 255, 255, 0.72);
       }
 
       .filter-tabs__button:active {
@@ -252,7 +311,8 @@
 
       .filter-tabs__button--active {
         color: #ffffff;
-        background: var(--color-primary);
+        background: linear-gradient(135deg, #67a1ff 0%, var(--color-primary) 100%);
+        box-shadow: 0 10px 20px rgba(79, 142, 247, 0.24);
       }
 
       .filter-tabs__count {
@@ -263,14 +323,14 @@
       .todo-card__list-wrap {
         flex: 1 1 auto;
         min-height: 0;
-        margin: 14px -4px 0;
+        margin: 16px -4px 0;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
 
       .todo-list {
         min-height: 100%;
-        padding: 0 4px;
+        padding: 0 4px 6px;
         margin: 0;
         list-style: none;
       }
@@ -278,15 +338,22 @@
       .empty-state {
         display: grid;
         place-items: center;
-        min-height: 250px;
+        min-height: 270px;
         color: var(--color-soft);
         text-align: center;
       }
 
       .empty-state__icon {
-        display: block;
-        margin-bottom: 10px;
-        font-size: 42px;
+        display: inline-grid;
+        place-items: center;
+        width: 70px;
+        height: 70px;
+        margin-bottom: 14px;
+        font-size: 34px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 22px;
+        box-shadow: 0 12px 30px rgba(45, 58, 74, 0.06);
         line-height: 1;
       }
 
@@ -299,15 +366,25 @@
         position: relative;
         min-height: 56px;
         max-height: 110px;
+        margin-bottom: 8px;
         overflow: hidden;
-        border-bottom: 1px solid var(--color-line);
+        border: 1px solid rgba(232, 237, 242, 0.95);
+        border-radius: 18px;
         opacity: 1;
         transform: translateX(0);
+        box-shadow: 0 10px 24px rgba(45, 58, 74, 0.045);
         transition:
+          border-color var(--transition),
+          box-shadow var(--transition),
           opacity var(--transition),
           transform var(--transition),
           max-height var(--transition),
           padding var(--transition);
+      }
+
+      .todo-item:hover {
+        border-color: rgba(203, 213, 225, 0.95);
+        box-shadow: 0 14px 30px rgba(45, 58, 74, 0.08);
       }
 
       .todo-item--enter {
@@ -326,8 +403,9 @@
         grid-template-columns: 44px minmax(0, 1fr) 44px;
         align-items: center;
         min-height: 56px;
-        padding: 12px 0 12px 16px;
+        padding: 12px 0 12px 14px;
         background: #ffffff;
+        border-radius: 18px;
         transition: transform var(--transition);
       }
 
@@ -374,11 +452,14 @@
         justify-content: center;
         width: 22px;
         height: 22px;
+        background: #ffffff;
         border: 2px solid #cbd5e1;
         border-radius: 50%;
+        box-shadow: inset 0 0 0 3px #ffffff;
         transition:
           background-color var(--transition),
           border-color var(--transition),
+          box-shadow var(--transition),
           transform var(--transition);
       }
 
@@ -396,6 +477,7 @@
       .todo-item--completed .todo-item__check-circle {
         background: var(--color-primary);
         border-color: var(--color-primary);
+        box-shadow: 0 8px 16px rgba(79, 142, 247, 0.26);
       }
 
       .todo-item--completed .todo-item__check-circle::after {
@@ -420,6 +502,7 @@
         overflow: hidden;
         color: var(--color-text);
         font-size: 16px;
+        font-weight: 500;
         line-height: 1.5;
         text-align: left;
         text-overflow: ellipsis;
@@ -438,11 +521,12 @@
 
       .todo-item__time {
         flex: 0 0 auto;
-        padding: 3px 7px;
+        padding: 4px 8px;
         color: var(--color-muted);
         font-size: 12px;
         line-height: 1.2;
-        background: #f1f5f9;
+        background: #f4f7fb;
+        border: 1px solid #e8edf2;
         border-radius: 999px;
         transition:
           color var(--transition),
@@ -457,7 +541,7 @@
       .todo-item__edit {
         width: 100%;
         min-height: 44px;
-        padding: 0;
+        padding: 0 2px;
         color: var(--color-text);
         font-size: 16px;
         background: transparent;
@@ -495,24 +579,35 @@
 
       .todo-card__footer {
         flex: 0 0 auto;
+        position: relative;
+        z-index: 1;
         padding-top: 12px;
-        background: #ffffff;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), #ffffff);
       }
 
       .todo-stats {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 6px;
+        padding: 10px 12px;
         color: var(--color-muted);
         font-size: 13px;
         line-height: 1.4;
+        background: #f8fafc;
+        border: 1px solid #e8edf2;
+        border-radius: 16px;
+      }
+
+      .todo-stats strong {
+        color: var(--color-text);
+        font-weight: 700;
       }
 
       .clear-button {
         display: block;
         min-height: 44px;
-        padding: 10px 0 0;
+        padding: 11px 0 0;
         margin: 8px auto 0;
         color: #94a3b8;
         font-size: 14px;
@@ -552,7 +647,17 @@
         .todo-card {
           width: 100%;
           height: 100dvh;
+          border: 0;
           border-radius: 0;
+          box-shadow: none;
+        }
+
+        .todo-card__header {
+          margin-bottom: 20px;
+        }
+
+        .todo-card__list-wrap {
+          margin-top: 14px;
         }
       }
 
@@ -568,6 +673,10 @@
         .filter-tabs__button {
           padding-inline: 9px;
           font-size: 13px;
+        }
+
+        .todo-stats {
+          font-size: 12px;
         }
       }
     </style>
